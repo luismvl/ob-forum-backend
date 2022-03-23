@@ -1,5 +1,5 @@
-ARG base
-FROM ${base}
+# ARG base
+FROM gitpod/workspace-base
 
 USER gitpod
 
