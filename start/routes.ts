@@ -27,6 +27,7 @@ Route.get('/', async () => {
 
 Route.post('/testlogin', 'TestsController.testlogin')
 Route.get('/testauth', 'TestsController.testauth').middleware('auth')
+Route.post('/test', 'TestsController.test')
 
 Route.get('health', async ({ response }) => {
   const report = await HealthCheck.getReport()

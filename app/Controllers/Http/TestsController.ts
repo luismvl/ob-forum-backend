@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import User from 'App/Models/User'
 
 export default class TestsController {
   public async testlogin({ request, response, auth }: HttpContextContract) {
@@ -23,4 +24,17 @@ export default class TestsController {
       logged: true,
     })
   }
+
+  public async test({ response }: HttpContextContract) {
+    const user = await User.firstOrCreate({
+      email: 'demo@mail.com',
+      username: 'demo',
+      password: 'demo',
+      fullname: 'Demo Full Name'
+    })
+
+    response.json({ user })
+  }
 }
+
+
