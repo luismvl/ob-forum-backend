@@ -1,22 +1,16 @@
 import { DateTime } from 'luxon'
 import {
-  afterCreate,
   afterSave,
   BaseModel,
-  beforeFind,
-  beforeSave,
   BelongsTo,
   belongsTo,
   column,
-  computed,
   HasMany,
   hasMany,
   HasOne,
   hasOne,
   ManyToMany,
   manyToMany,
-  ModelQueryBuilderContract,
-  PreloaderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Post from './Post'
@@ -25,6 +19,9 @@ import Subforum from './Subforum'
 export default class Thread extends BaseModel {
   @column({ isPrimary: true })
   public id: number
+
+  @column()
+  public content: string
 
   @column()
   public userId: number
@@ -41,20 +38,6 @@ export default class Thread extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  // @computed()
-  // public get originalPost() {
-  //   console.log('calculating op post')
-  //   if (!this.posts) return null
-  //   // console.log({ posts: this.posts })
-  //   return this.posts?.reduce((op, p) => (p.createdAt < op.createdAt ? p : op), this.posts[0])
-  // }
-
-  // @beforeFind()
-  // public static preloadPosts(query: ModelQueryBuilderContract<typeof User>) {
-  //   console.log('trying to preload posts')
-  //   query.preload('posts')
-  // }
-
   @hasOne(() => Post)
   public pinnedPost: HasOne<typeof Post>
 
@@ -65,7 +48,7 @@ export default class Thread extends BaseModel {
   public posts: HasMany<typeof Post>
 
   @manyToMany(() => User, {
-    pivotTable: 'follower_threads',
+    pivotTable: 'follower_thread',
   })
   public usersFollowing: ManyToMany<typeof User>
 

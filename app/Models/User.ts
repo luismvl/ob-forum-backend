@@ -15,6 +15,7 @@ import Notification from './Notification'
 import Vote from './Vote'
 import Forum from './Forum'
 import Subforum from './Subforum'
+import Course from './Course'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -54,19 +55,22 @@ export default class User extends BaseModel {
   public votes: HasMany<typeof Vote>
 
   @manyToMany(() => Thread, {
-    pivotTable: 'follower_threads',
+    pivotTable: 'follower_thread',
   })
   public followedThreads: ManyToMany<typeof Thread>
 
   @manyToMany(() => Forum, {
-    pivotTable: 'follower_forums',
+    pivotTable: 'follower_forum',
   })
   public followedForums: ManyToMany<typeof Forum>
 
   @manyToMany(() => Subforum, {
-    pivotTable: 'follower_subforums',
+    pivotTable: 'follower_subforum',
   })
   public followedSubforums: ManyToMany<typeof Subforum>
+
+  @manyToMany(() => Course)
+  public courses: ManyToMany<typeof Course>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
