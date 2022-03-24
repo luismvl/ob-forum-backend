@@ -38,4 +38,6 @@ Route.group(() => {
 // TODO: Implementar especificación de api
 //  1 - Implementar CRUD
 
-// Route.resource(resource, controller)
+Route.group(() => {
+  Route.resource('courses', 'CoursesController').apiOnly()
+}).middleware('auth')

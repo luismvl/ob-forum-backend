@@ -7,8 +7,8 @@ export default class Courses extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('title', 50).notNullable().unique()
-      table.string('descrption', 255).nullable()
-
+      table.string('description', 255).nullable()
+      table.string('icon_url', 255).nullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

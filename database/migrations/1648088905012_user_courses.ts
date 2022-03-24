@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class UserCourses extends BaseSchema {
-  protected tableName = 'user_courses'
+  protected tableName = 'course_user'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
