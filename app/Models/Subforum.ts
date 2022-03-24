@@ -12,16 +12,29 @@ import {
 import Thread from './Thread'
 import Forum from './Forum'
 import User from './User'
+import Module from './Module'
 
 export default class Subforum extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public name: string
+  public title: string
+
+  @column()
+  public description: string
+
+  @column()
+  public isPinned: boolean
+
+  @column()
+  public moduleId: number
 
   @column()
   public forumId: number
+
+  @belongsTo(() => Module)
+  public module: BelongsTo<typeof Module>
 
   @hasMany(() => Thread)
   public threads: HasMany<typeof Thread>
@@ -30,7 +43,7 @@ export default class Subforum extends BaseModel {
   public forum: BelongsTo<typeof Forum>
 
   @manyToMany(() => User, {
-    pivotTable: 'follower_subforums',
+    pivotTable: 'follower_subforum',
   })
   public usersFollowing: ManyToMany<typeof User>
 

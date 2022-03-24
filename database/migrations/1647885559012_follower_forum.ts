@@ -1,15 +1,13 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class FollowerThreads extends BaseSchema {
-  protected tableName = 'follower_threads'
+export default class FollowerForums extends BaseSchema {
+  protected tableName = 'follower_forum'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('thread_id').references('threads.id').notNullable().onDelete('CASCADE')
+      table.integer('forum_id').references('forums.id').notNullable().onDelete('CASCADE')
       table.integer('user_id').references('users.id').notNullable().onDelete('CASCADE')
-      table.unique(['user_id', 'thread_id'])
-
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon'
 import {
   BaseModel,
-  BelongsTo,
-  belongsTo,
   column,
   HasMany,
   hasMany,
@@ -11,11 +9,10 @@ import {
   ManyToMany,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import Subforum from './Subforum'
+import Module from './Module'
 import User from './User'
-import Course from './Course'
 
-export default class Forum extends BaseModel {
+export default class Course extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -23,18 +20,16 @@ export default class Forum extends BaseModel {
   public title: string
 
   @column()
-  public courseId: number
+  public description: string
 
-  @belongsTo(() => Course)
-  public course: BelongsTo<typeof Course>
+  @hasMany(() => Module)
+  public modules: HasMany<typeof Module>
 
-  @hasMany(() => Subforum)
-  public subforums: HasMany<typeof Subforum>
+  @manyToMany(() => User)
+  public users: ManyToMany<typeof User>
 
-  @manyToMany(() => User, {
-    pivotTable: 'follower_forum',
-  })
-  public usersFollowing: ManyToMany<typeof User>
+  @hasOne(() => Course)
+  public course: HasOne<typeof Course>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

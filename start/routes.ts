@@ -25,11 +25,17 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.post('/testlogin', 'TestsController.testlogin')
-Route.get('/testauth', 'TestsController.testauth').middleware('auth')
-
-Route.get('health', async ({ response }) => {
+Route.get('/health', async ({ response }) => {
   const report = await HealthCheck.getReport()
-
   return report.healthy ? response.ok(report) : response.badRequest(report)
 })
+
+Route.group(() => {
+  Route.post('/login', 'AuthController.login')
+  Route.post('/register', 'AuthController.register')
+}).prefix('auth')
+
+// TODO: Implementar especificación de api
+//  1 - Implementar CRUD
+
+// Route.resource(resource, controller)
