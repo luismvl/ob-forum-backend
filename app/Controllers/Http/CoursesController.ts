@@ -8,7 +8,7 @@ export default class CoursesController {
     return response.json(courses)
   }
 
-  public async store({ request, response, auth }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const courseSchema = schema.create({
       title: schema.string({ trim: true }, [
         rules.minLength(2),
@@ -18,13 +18,13 @@ export default class CoursesController {
       iconUrl: schema.string.optional({}, [rules.url()]),
     })
 
-    const user = auth.user
+    // const user = auth.user
 
     const data = await request.validate({ schema: courseSchema })
     const course = await Course.create(data)
-    await user?.related('courses').save(course)
+    // await user?.related('courses').save(course)
 
-    return response.json({ course, user })
+    return response.json({ course })
   }
 
   public async show({ request, response }: HttpContextContract) {
@@ -45,11 +45,10 @@ export default class CoursesController {
     })
 
     const data = await request.validate({ schema: courseSchema })
+
     const course = await Course.findOrFail(courseId)
-    course.title = data.title || course.title
-    course.description = data.description || course.description
-    course.iconUrl = data.iconUrl || course.iconUrl
-    await course.save()
+    await course.merge(data).save()
+    
     return response.json(course)
   }
 

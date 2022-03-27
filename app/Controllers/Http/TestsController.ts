@@ -1,4 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Vote from 'App/Models/Vote'
+import { VoteType } from 'Contracts/enums/VoteType'
 
 export default class TestsController {
   public async testlogin({ request, response, auth }: HttpContextContract) {
@@ -16,5 +18,14 @@ export default class TestsController {
     return response.json({
       logged: true,
     })
+  }
+
+  public async testvote({ request, response }: HttpContextContract) {
+    const vote = await Vote.create({
+      userId: 2,
+      postId: 1,
+      type: VoteType.UP_VOTE
+    })
+    return response.json({ vote })
   }
 }

@@ -5,17 +5,18 @@ import Thread from './Thread'
 import Vote from './Vote'
 
 export default class Post extends BaseModel {
+
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public content: string
+  
   @column()
   public userId: number
 
   @column()
   public threadId: number
-
-  @column()
-  public content: string
 
   @hasMany(() => Vote)
   public votes: HasMany<typeof Vote>

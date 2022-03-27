@@ -10,10 +10,10 @@ export default class Module extends BaseModel {
   public title: string
 
   @column()
-  public description: string
+  public description?: string
 
   @column()
-  public courseId: string
+  public courseId: number
 
   @hasOne(() => Module)
   public module: HasOne<typeof Module>

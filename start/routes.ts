@@ -35,9 +35,16 @@ Route.group(() => {
   Route.post('/register', 'AuthController.register')
 }).prefix('auth')
 
+Route.get('/testvote', 'TestsController.testvote')
+
 // TODO: Implementar especificación de api
 //  1 - Implementar CRUD
 
 Route.group(() => {
   Route.resource('courses', 'CoursesController').apiOnly()
-}).middleware('auth')
+  Route.resource('forums', 'ForumsController').apiOnly()
+  Route.resource('subforums', 'SubforumsController').apiOnly()
+  Route.resource('threads', 'ThreadsController').apiOnly()
+  Route.resource('posts', 'PostsController').apiOnly()
+})
+

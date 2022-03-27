@@ -6,9 +6,9 @@ export default class Posts extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.string('content', 1000).notNullable()
       table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
       table.integer('thread_id').notNullable().references('threads.id').onDelete('CASCADE')
-      table.string('content', 1000).notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

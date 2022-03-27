@@ -21,19 +21,19 @@ export default class Thread extends BaseModel {
   public id: number
 
   @column()
+  public subject: string
+
+  @column()
   public content: string
+
+  @column()
+  public isPinned: boolean = false
 
   @column()
   public userId: number
 
   @column()
   public subforumId: number
-
-  @column()
-  public subject: string
-
-  @column()
-  public isPinned: boolean = false
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>

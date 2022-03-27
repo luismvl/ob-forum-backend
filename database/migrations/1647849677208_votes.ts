@@ -9,6 +9,7 @@ export default class Votes extends BaseSchema {
       table.integer('post_id').notNullable().references('posts.id').onDelete('CASCADE')
       table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
       table.integer('type').notNullable()
+      table.primary(['post_id', 'user_id'])
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
