@@ -48,7 +48,7 @@ export default class CoursesController {
 
     const course = await Course.findOrFail(courseId)
     await course.merge(data).save()
-    
+
     return response.json(course)
   }
 

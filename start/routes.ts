@@ -46,5 +46,4 @@ Route.group(() => {
   Route.resource('subforums', 'SubforumsController').apiOnly()
   Route.resource('threads', 'ThreadsController').apiOnly()
   Route.resource('posts', 'PostsController').apiOnly()
-})
-
+}).middleware('auth')

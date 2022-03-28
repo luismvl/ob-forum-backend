@@ -6,10 +6,11 @@ export default class Votes extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('post_id').notNullable().references('posts.id').onDelete('CASCADE')
-      table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
       table.integer('type').notNullable()
-      table.primary(['post_id', 'user_id'])
+      table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
+      table.integer('target_id').notNullable() // post_id or thread_id
+      table.integer('target_type').notNullable() // 1 for post, 2 for thread
+      table.primary(['user_id', 'target_id', 'target_type'])
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

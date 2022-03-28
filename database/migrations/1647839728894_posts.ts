@@ -7,6 +7,7 @@ export default class Posts extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('content', 1000).notNullable()
+      table.boolean('is_pinned').notNullable().defaultTo(false)
       table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
       table.integer('thread_id').notNullable().references('threads.id').onDelete('CASCADE')
       /**

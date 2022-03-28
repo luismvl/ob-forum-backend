@@ -1,7 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Thread from 'App/Models/Thread'
-import User from 'App/Models/User'
 
 export default class ThreadsController {
   public async index({ response }: HttpContextContract) {
@@ -9,7 +8,7 @@ export default class ThreadsController {
     return response.json(threads)
   }
 
-  public async store({ request, response, auth }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const threadSchema = schema.create({
       subject: schema.string({ trim: true }, [rules.maxLength(100)]),
       content: schema.string({ escape: true }, [rules.maxLength(1000)]),
