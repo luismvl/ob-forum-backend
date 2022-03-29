@@ -1,17 +1,49 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Forum from 'App/Models/Forum'
 import Subforum from 'App/Models/Subforum'
+import User from 'App/Models/User'
 
 export default class SubforumsController {
-  public async index({ response }: HttpContextContract) {
-    const subforums = await Subforum.all()
-    return response.json(subforums)
+  public async index({ request, response, auth }: HttpContextContract) {
+    const user = auth.user as User
+    const courseId = request.input('courseId')
+    const moduleId = request.input('moduleId')
+    const userCourses = await user.related('courses').query()
+
+    // Foros a los que el usuario tiene acceso
+    const forums = await Forum.query()
+      .if(courseId, (query) => query.where('course_id', courseId))
+      .whereIn(
+        'course_id',
+        userCourses.map((c) => c.id)
+      )
+
+    const subforums = await Subforum.query()
+      .if(moduleId, (query) => {
+        query.andWhere('moduleId', moduleId)
+      })
+      .if(!user.isAdmin, (query) =>
+        query.whereIn(
+          'forum_id',
+          forums.map((f) => f.id)
+        )
+      )
+      .orderBy('isPinned', 'desc')
+      .preload('threads')
+
+    return subforums.length === 0
+      ? response.notFound()
+      : subforums.length === 1
+      ? response.json(subforums[0])
+      : response.json(subforums)
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    // if (!auth.user?.isAdmin) {
-    //   return response.unauthorized()
-    // }
+  public async store({ request, response, auth }: HttpContextContract) {
+    const user = auth.user as User
+    if (!user.isAdmin) {
+      return response.unauthorized()
+    }
     const subforumSchema = schema.create({
       title: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string(),
@@ -29,10 +61,15 @@ export default class SubforumsController {
   public async show({ request, response }: HttpContextContract) {
     const subforumId = request.param('id')
     const subforum = await Subforum.findOrFail(subforumId)
+    await subforum.load('threads')
     return response.json(subforum)
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, auth }: HttpContextContract) {
+    const user = auth.user as User
+    if (!user.isAdmin) {
+      return response.unauthorized()
+    }
     const subforumId = request.param('id')
     const subforumSchema = schema.create({
       title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
@@ -50,7 +87,11 @@ export default class SubforumsController {
     return response.json(subforum)
   }
 
-  public async destroy({ request, response }: HttpContextContract) {
+  public async destroy({ request, response, auth }: HttpContextContract) {
+    const user = auth.user as User
+    if (!user.isAdmin) {
+      return response.unauthorized()
+    }
     const moduleId = request.param('id')
     const module = await Subforum.findOrFail(moduleId)
     await module.delete()

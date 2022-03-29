@@ -4,6 +4,7 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  computed,
   HasMany,
   hasMany,
   manyToMany,
@@ -28,10 +29,15 @@ export default class Subforum extends BaseModel {
   public isPinned: boolean
 
   @column()
-  public moduleId: number
+  public moduleId?: number
 
   @column()
   public forumId: number
+
+  @computed()
+  public get totalThreads() {
+    return this.$preloaded.threads ? this.threads.length : undefined
+  }
 
   @belongsTo(() => Module)
   public module: BelongsTo<typeof Module>

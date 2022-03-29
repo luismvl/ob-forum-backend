@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
 import Course from './Course'
+import Subforum from './Subforum'
 
 export default class Module extends BaseModel {
   @column({ isPrimary: true })
@@ -15,8 +16,8 @@ export default class Module extends BaseModel {
   @column()
   public courseId: number
 
-  @hasOne(() => Module)
-  public module: HasOne<typeof Module>
+  @hasOne(() => Subforum)
+  public subforum: HasOne<typeof Subforum>
 
   @belongsTo(() => Course)
   public course: BelongsTo<typeof Course>
