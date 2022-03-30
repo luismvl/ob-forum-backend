@@ -33,13 +33,11 @@ export default class SubforumsController {
       .orderBy('is_pinned', 'desc')
       .preload('threads')
 
-      const subforumsObj = subforums.map(sf => sf.toObject())
-
     return subforums.length === 0
       ? response.notFound()
       : subforums.length === 1
-      ? response.json(subforumsObj[0])
-      : response.json(subforumsObj)
+      ? response.json(subforums[0])
+      : response.json(subforums)
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {
@@ -57,7 +55,7 @@ export default class SubforumsController {
     const subforum = await Subforum.create(data)
     await subforum.refresh()
 
-    return response.json(subforum.toObject())
+    return response.json(subforum)
   }
 
   public async show({ request, response, bouncer }: HttpContextContract) {
@@ -66,7 +64,7 @@ export default class SubforumsController {
     await subforum.load('threads')
 
     await bouncer.with('SubforumPolicy').authorize('view', subforum)
-    return response.json(subforum.toObject())
+    return response.json(subforum)
   }
 
   public async update({ request, response, bouncer }: HttpContextContract) {
@@ -86,7 +84,7 @@ export default class SubforumsController {
     const subforum = await Subforum.findOrFail(subforumId)
     await subforum.merge(data).save()
 
-    return response.json(subforum.toObject())
+    return response.json(subforum)
   }
 
   public async destroy({ request, response, bouncer }: HttpContextContract) {

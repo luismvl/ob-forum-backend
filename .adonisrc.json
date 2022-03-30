@@ -17,7 +17,14 @@
   "preloads": [
     "./start/routes",
     "./start/kernel",
-    "./start/bouncer"
+    "./start/bouncer",
+    {
+      "file": "./start/namingstratergy",
+      "environment": [
+        "console",
+        "web"
+      ]
+    }
   ],
   "providers": [
     "./providers/AppProvider",
