@@ -55,6 +55,7 @@ export default class SubforumsController {
 
     const data = await request.validate({ schema: subforumSchema })
     const subforum = await Subforum.create(data)
+    await subforum.refresh()
 
     return response.json(subforum.toObject())
   }
@@ -63,7 +64,7 @@ export default class SubforumsController {
     const subforumId = request.param('id')
     const subforum = await Subforum.findOrFail(subforumId)
     await subforum.load('threads')
-    
+
     await bouncer.with('SubforumPolicy').authorize('view', subforum)
     return response.json(subforum.toObject())
   }
