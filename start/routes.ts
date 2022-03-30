@@ -37,9 +37,6 @@ Route.group(() => {
 
 Route.get('/testvote', 'TestsController.testvote')
 
-// TODO: Implementar especificación de api
-//  1 - Implementar CRUD
-
 Route.group(() => {
   Route.resource('courses', 'CoursesController').apiOnly()
   Route.resource('forums', 'ForumsController').apiOnly()

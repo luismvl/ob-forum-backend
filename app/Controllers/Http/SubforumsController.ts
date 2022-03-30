@@ -19,31 +19,32 @@ export default class SubforumsController {
         userCourses.map((c) => c.id)
       )
 
-    const subforums = await Subforum.query()
+    let subforums = await Subforum.query()
       .if(moduleId, (query) => {
         query.andWhere('moduleId', moduleId)
       })
+    // Si no es admin solo trae los subforos a los que el usuario tiene acceso
       .if(!user.isAdmin, (query) =>
         query.whereIn(
           'forum_id',
           forums.map((f) => f.id)
         )
       )
-      .orderBy('isPinned', 'desc')
+      .orderBy('is_pinned', 'desc')
       .preload('threads')
+
+      const subforumsObj = subforums.map(sf => sf.toObject())
 
     return subforums.length === 0
       ? response.notFound()
       : subforums.length === 1
-      ? response.json(subforums[0])
-      : response.json(subforums)
+      ? response.json(subforumsObj[0])
+      : response.json(subforumsObj)
   }
 
-  public async store({ request, response, auth }: HttpContextContract) {
-    const user = auth.user as User
-    if (!user.isAdmin) {
-      return response.unauthorized()
-    }
+  public async store({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('SubforumPolicy').authorize('create')
+
     const subforumSchema = schema.create({
       title: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string(),
@@ -55,21 +56,21 @@ export default class SubforumsController {
     const data = await request.validate({ schema: subforumSchema })
     const subforum = await Subforum.create(data)
 
-    return response.json(subforum)
+    return response.json(subforum.toObject())
   }
 
-  public async show({ request, response }: HttpContextContract) {
+  public async show({ request, response, bouncer }: HttpContextContract) {
     const subforumId = request.param('id')
     const subforum = await Subforum.findOrFail(subforumId)
     await subforum.load('threads')
-    return response.json(subforum)
+    
+    await bouncer.with('SubforumPolicy').authorize('view', subforum)
+    return response.json(subforum.toObject())
   }
 
-  public async update({ request, response, auth }: HttpContextContract) {
-    const user = auth.user as User
-    if (!user.isAdmin) {
-      return response.unauthorized()
-    }
+  public async update({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('SubforumPolicy').authorize('update')
+
     const subforumId = request.param('id')
     const subforumSchema = schema.create({
       title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
@@ -84,14 +85,12 @@ export default class SubforumsController {
     const subforum = await Subforum.findOrFail(subforumId)
     await subforum.merge(data).save()
 
-    return response.json(subforum)
+    return response.json(subforum.toObject())
   }
 
-  public async destroy({ request, response, auth }: HttpContextContract) {
-    const user = auth.user as User
-    if (!user.isAdmin) {
-      return response.unauthorized()
-    }
+  public async destroy({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('SubforumPolicy').authorize('delete')
+
     const moduleId = request.param('id')
     const module = await Subforum.findOrFail(moduleId)
     await module.delete()
