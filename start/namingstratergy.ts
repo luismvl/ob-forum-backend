@@ -8,5 +8,6 @@
 |
 */
 import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
-import { CamelCaseNamingStrategy } from 'Contracts/CamelCaseNamingStrategy '
+import { CamelCaseNamingStrategy } from 'Contracts/naming/CamelCaseNamingStrategy'
+
 BaseModel.namingStrategy = new CamelCaseNamingStrategy()
