@@ -9,7 +9,7 @@ export default class Subforums extends BaseSchema {
       table.string('title', 255).notNullable()
       table.string('description', 255).notNullable()
       table.boolean('is_pinned').notNullable().defaultTo(false)
-      table.integer('forum_id').notNullable().references('forums.id').onDelete('CASCADE')
+      table.integer('course_id').notNullable().references('courses.id').onDelete('CASCADE')
       table.integer('module_id').nullable().references('modules.id').onDelete('SET NULL')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

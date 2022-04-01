@@ -11,9 +11,9 @@ import {
   ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Thread from './Thread'
-import Forum from './Forum'
 import User from './User'
 import Module from './Module'
+import Course from './Course'
 
 export default class Subforum extends BaseModel {
   @column({ isPrimary: true })
@@ -32,7 +32,7 @@ export default class Subforum extends BaseModel {
   public moduleId?: number
 
   @column()
-  public forumId: number
+  public courseId: number
 
   @computed()
   public get totalThreads() {
@@ -45,8 +45,8 @@ export default class Subforum extends BaseModel {
   @hasMany(() => Thread)
   public threads: HasMany<typeof Thread>
 
-  @belongsTo(() => Forum)
-  public forum: BelongsTo<typeof Forum>
+  @belongsTo(() => Course)
+  public forum: BelongsTo<typeof Course>
 
   @manyToMany(() => User, {
     pivotTable: 'follower_subforum',

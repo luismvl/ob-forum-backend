@@ -1,5 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import Forum from 'App/Models/Forum'
+import Course from 'App/Models/Course'
 import User from 'App/Models/User'
 import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
 import { VoteType } from 'Contracts/enums/VoteType'
@@ -9,34 +9,17 @@ export default class ThreadSeeder extends BaseSeeder {
     // Trae un user
     const user = await User.findByOrFail('username', 'demo')
     // Trae un foro
-    const forum = await Forum.query().where('title', 'React JS').firstOrFail()
-
-    await (
-      await (await Forum.query().where('title', 'Angular').firstOrFail())
-        .related('subforums')
-        .query()
-        .where('title', 'Módulo 1')
-        .firstOrFail()
-    )
-      .related('threads')
-      .updateOrCreateMany([
-        {
-          subject: 'Subject of a PINNED thread',
-          content: 'Thread content!, it should probably be in html',
-          userId: user.id,
-          isPinned: true,
-        },
-      ])
+    const course1 = await Course.query().where('title', 'React JS').firstOrFail()
 
     // Trae el subforo general del foro
-    const subforum = await forum
+    const subforum1 = await course1
       .related('subforums')
       .query()
       .where('title', 'Módulo 1')
       .firstOrFail()
 
     // Crea un nuevo thread
-    const thread = await subforum.related('threads').updateOrCreateMany(
+    const thread = await subforum1.related('threads').updateOrCreateMany(
       [
         {
           subject: 'Subject of the thread',
@@ -64,6 +47,7 @@ export default class ThreadSeeder extends BaseSeeder {
       .related('posts')
       .updateOrCreate({ content: 'Post content!' }, { userId: user.id })
 
+    // Crea un post pineado
     await thread[0]
       .related('posts')
       .updateOrCreate(
@@ -78,5 +62,23 @@ export default class ThreadSeeder extends BaseSeeder {
         { userId: user.id, targetType: VoteTargetType.THREAD, targetId: thread[0].id },
         { type: VoteType.UP_VOTE }
       )
+
+    const course2 = await Course.query().where('title', 'Angular').firstOrFail()
+
+    const subforums2 = await course2
+      .related('subforums')
+      .query()
+      .where('title', 'Módulo 1')
+      .firstOrFail()
+
+      await subforums2.related('threads')
+      .updateOrCreateMany([
+        {
+          subject: 'Subject of a PINNED thread',
+          content: 'Thread content!, it should probably be in html',
+          userId: user.id,
+          isPinned: true,
+        },
+      ])
   }
 }

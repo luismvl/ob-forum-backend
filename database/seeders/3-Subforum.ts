@@ -1,21 +1,13 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import Course from 'App/Models/Course'
-import Forum from 'App/Models/Forum'
 
 export default class ForumSeeder extends BaseSeeder {
   public async run() {
     const courses = await Course.query().preload('modules')
 
-    // Crea un foro por cada curso
-    for await (const course of courses) {
-      await Forum.updateOrCreate({ title: course.title }, { courseId: course.id })
-    }
-
-    const forums = await Forum.query().preload('course', (q) => q.preload('modules'))
-
     // Crea los subforos 'General', 'Errores' y 'Proyectos' para cada curso
-    for await (const forum of forums) {
-      await forum.related('subforums').updateOrCreateMany(
+    for await (const course of courses) {
+      await course.related('subforums').updateOrCreateMany(
         [
           {
             title: 'General',
@@ -38,10 +30,10 @@ export default class ForumSeeder extends BaseSeeder {
     }
 
     // Crea subforos para cada módulo de cada curso
-    for await (const forum of forums) {
+    for await (const course of courses) {
       await Promise.all(
-        forum.course.modules.map((module) => {
-          return forum
+        course.modules.map((module) => {
+          return course
             .related('subforums')
             .updateOrCreate(
               { title: module.title },

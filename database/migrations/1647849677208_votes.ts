@@ -8,8 +8,10 @@ export default class Votes extends BaseSchema {
       table.increments('id')
       table.integer('type').notNullable()
       table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
-      table.integer('target_id').notNullable() // post_id or thread_id
-      table.integer('target_type').notNullable() // 1 for post, 2 for thread
+      
+      // post_id o thread_id (se verifica que sea un id válida en el modelo antes de guardar)
+      table.integer('target_id').notNullable()
+      table.integer('target_type').notNullable() // 1 = post, 2 = thread
       table.primary(['user_id', 'target_id', 'target_type'])
 
       /**

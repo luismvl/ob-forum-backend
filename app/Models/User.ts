@@ -13,7 +13,6 @@ import Thread from './Thread'
 import Post from './Post'
 import Notification from './Notification'
 import Vote from './Vote'
-import Forum from './Forum'
 import Subforum from './Subforum'
 import Course from './Course'
 
@@ -59,10 +58,10 @@ export default class User extends BaseModel {
   })
   public followedThreads: ManyToMany<typeof Thread>
 
-  @manyToMany(() => Forum, {
-    pivotTable: 'follower_forum',
+  @manyToMany(() => Course, {
+    pivotTable: 'follower_course',
   })
-  public followedForums: ManyToMany<typeof Forum>
+  public followedCourses: ManyToMany<typeof Course>
 
   @manyToMany(() => Subforum, {
     pivotTable: 'follower_subforum',
