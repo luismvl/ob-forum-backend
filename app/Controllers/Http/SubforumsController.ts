@@ -1,6 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import Forum from 'App/Models/Forum'
 import Subforum from 'App/Models/Subforum'
 import User from 'App/Models/User'
 
@@ -11,23 +10,18 @@ export default class SubforumsController {
     const moduleId = request.input('moduleId')
     const userCourses = await user.related('courses').query()
 
-    // Foros a los que el usuario tiene acceso
-    const forums = await Forum.query()
-      .if(courseId, (query) => query.where('course_id', courseId))
-      .whereIn(
-        'course_id',
-        userCourses.map((c) => c.id)
-      )
-
     let subforums = await Subforum.query()
+      .if(courseId, (query) => {
+        query.andWhere('courseId', courseId)
+      })
       .if(moduleId, (query) => {
         query.andWhere('moduleId', moduleId)
       })
-    // Si no es admin solo trae los subforos a los que el usuario tiene acceso
+      // Si no es admin solo trae los subforos a los que el usuario tiene acceso
       .if(!user.isAdmin, (query) =>
         query.whereIn(
-          'forum_id',
-          forums.map((f) => f.id)
+          'course_id',
+          userCourses.map((f) => f.id)
         )
       )
       .orderBy('is_pinned', 'desc')
