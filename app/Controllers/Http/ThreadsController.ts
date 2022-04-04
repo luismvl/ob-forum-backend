@@ -3,8 +3,15 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Thread from 'App/Models/Thread'
 
 export default class ThreadsController {
-  public async index({ response }: HttpContextContract) {
-    const threads = await Thread.all()
+  public async index({ request, response }: HttpContextContract) {
+    const subforumId = request.input('subforumId')
+    console.log('::: subforumId', subforumId)
+
+    const threads = await Thread.query()
+      .preload('user')
+      .withCount('posts')
+      .orderBy('is_pinned', 'desc')
+
     return response.json(threads)
   }
 
@@ -26,7 +33,7 @@ export default class ThreadsController {
 
   public async show({ request, response }: HttpContextContract) {
     const threadId = request.param('id')
-    const thread = await Thread.findOrFail(threadId)
+    const thread = await Thread.query().where('id', threadId).preload('posts').firstOrFail()
     return response.json(thread)
   }
 

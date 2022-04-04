@@ -5,6 +5,7 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  computed,
   HasMany,
   hasMany,
   HasOne,
@@ -36,6 +37,11 @@ export default class Thread extends BaseModel {
   @column()
   public subforumId: number
 
+  @computed()
+  public get totalPosts() {
+    return this.$extras.posts_count || undefined
+  }
+
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
@@ -66,5 +72,4 @@ export default class Thread extends BaseModel {
   public static addCreatorFollow(thread: Thread) {
     thread.related('usersFollowing').attach([thread.userId])
   }
-
 }

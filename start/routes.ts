@@ -39,7 +39,6 @@ Route.get('/testvote', 'TestsController.testvote')
 
 Route.group(() => {
   Route.resource('courses', 'CoursesController').apiOnly()
-  Route.resource('forums', 'ForumsController').apiOnly()
   Route.resource('subforums', 'SubforumsController').apiOnly()
   Route.resource('threads', 'ThreadsController').apiOnly()
   Route.resource('posts', 'PostsController').apiOnly()

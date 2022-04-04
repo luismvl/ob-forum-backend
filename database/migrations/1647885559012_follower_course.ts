@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class FollowerForums extends BaseSchema {
+export default class FollowerCoures extends BaseSchema {
   protected tableName = 'follower_course'
 
   public async up() {

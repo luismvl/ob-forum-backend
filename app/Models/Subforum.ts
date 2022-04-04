@@ -36,7 +36,7 @@ export default class Subforum extends BaseModel {
 
   @computed()
   public get totalThreads() {
-    return this.$preloaded.threads ? this.threads.length : undefined
+    return this.$extras.threads_count || undefined
   }
 
   @belongsTo(() => Module)
@@ -46,7 +46,7 @@ export default class Subforum extends BaseModel {
   public threads: HasMany<typeof Thread>
 
   @belongsTo(() => Course)
-  public forum: BelongsTo<typeof Course>
+  public course: BelongsTo<typeof Course>
 
   @manyToMany(() => User, {
     pivotTable: 'follower_subforum',

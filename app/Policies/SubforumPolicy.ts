@@ -1,7 +1,6 @@
 import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import User from 'App/Models/User'
 import Subforum from 'App/Models/Subforum'
-import Forum from 'App/Models/Forum'
 
 export default class SubforumPolicy extends BasePolicy {
   public async viewList() {
@@ -11,11 +10,8 @@ export default class SubforumPolicy extends BasePolicy {
     if (user.isAdmin) return true
 
     const userCourses = await user.related('courses').query()
-    const forums = await Forum.query().whereIn(
-      'course_id',
-      userCourses.map((c) => c.id)
-    )
-    return forums.map((f) => f.id).includes(subforum.forumId)
+
+    return userCourses.map((c) => c.id).includes(subforum.courseId)
   }
   public async create(user: User) {
     if (user.isAdmin) return true

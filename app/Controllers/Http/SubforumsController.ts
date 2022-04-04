@@ -26,6 +26,7 @@ export default class SubforumsController {
       )
       .orderBy('is_pinned', 'desc')
       .preload('threads')
+      .withCount('threads')
 
     return subforums.length === 0
       ? response.notFound()
@@ -41,7 +42,7 @@ export default class SubforumsController {
       title: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string(),
       isPinned: schema.boolean.optional(),
-      forumId: schema.number(),
+      courseId: schema.number(),
       moduleId: schema.number.optional(),
     })
 
@@ -54,8 +55,12 @@ export default class SubforumsController {
 
   public async show({ request, response, bouncer }: HttpContextContract) {
     const subforumId = request.param('id')
-    const subforum = await Subforum.findOrFail(subforumId)
-    await subforum.load('threads')
+
+    const subforum = await Subforum.query()
+      .where('id', subforumId)
+      .preload('threads')
+      .withCount('threads')
+      .firstOrFail()
 
     await bouncer.with('SubforumPolicy').authorize('view', subforum)
     return response.json(subforum)
