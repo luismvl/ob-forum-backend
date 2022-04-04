@@ -1,22 +1,20 @@
 import { DateTime } from 'luxon'
 import {
   BaseModel,
-  beforeFetch,
-  beforeFind,
   BelongsTo,
   belongsTo,
   column,
   computed,
   HasMany,
   hasMany,
-  ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Thread from './Thread'
 import Vote from './Vote'
-import { VoteType } from 'Contracts/enums/VoteType'
+import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
 
 export default class Post extends BaseModel {
+
   @column({ isPrimary: true })
   public id: number
 
@@ -34,20 +32,25 @@ export default class Post extends BaseModel {
 
   @computed()
   public get votesCount(): number {
-    return this.votes.length
+    return this.$extras.votes_count || undefined
   }
 
   @computed()
   public get upVotesCount(): number {
-    return this.votes.filter((vote) => vote.type === VoteType.UP_VOTE).length
+    return this.$extras.up_votes_count || undefined
   }
 
   @computed()
   public get donwVotesCount(): number {
-    return this.votes.filter((vote) => vote.type === VoteType.DOWN_VOTE).length
+    return this.$extras.down_votes_count || undefined
   }
 
-  @hasMany(() => Vote, { foreignKey: 'targetId', serializeAs: null })
+  @hasMany(() => Vote, {
+    foreignKey: 'targetId',
+    onQuery(query) {
+      query.where('target_type', VoteTargetType.POST)
+    },
+  })
   public votes: HasMany<typeof Vote>
 
   @belongsTo(() => User)
@@ -61,14 +64,4 @@ export default class Post extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  @beforeFetch()
-  public static preloadVotesOnFetch(query: ModelQueryBuilderContract<typeof Thread>) {
-    query.preload('votes')
-  }
-
-  @beforeFind()
-  public static preloadVotesOnFind(query: ModelQueryBuilderContract<typeof Thread>) {
-    query.preload('votes')
-  }
 }

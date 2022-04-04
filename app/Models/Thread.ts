@@ -8,8 +8,6 @@ import {
   computed,
   HasMany,
   hasMany,
-  HasOne,
-  hasOne,
   ManyToMany,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
@@ -17,6 +15,7 @@ import User from './User'
 import Post from './Post'
 import Subforum from './Subforum'
 import Vote from './Vote'
+import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
 
 export default class Thread extends BaseModel {
   @column({ isPrimary: true })
@@ -38,15 +37,27 @@ export default class Thread extends BaseModel {
   public subforumId: number
 
   @computed()
+  public get votesCount(): number {
+    return this.$extras.votes_count || undefined
+  }
+
+  @computed()
+  public get upVotesCount(): number {
+    return this.$extras.up_votes_count || undefined
+  }
+
+  @computed()
+  public get donwVotesCount(): number {
+    return this.$extras.down_votes_count || undefined
+  }
+
+  @computed()
   public get totalPosts() {
     return this.$extras.posts_count || undefined
   }
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
-
-  @hasOne(() => Post)
-  public pinnedPost: HasOne<typeof Post>
 
   @belongsTo(() => Subforum)
   public subforum: BelongsTo<typeof Subforum>
@@ -59,7 +70,12 @@ export default class Thread extends BaseModel {
   })
   public usersFollowing: ManyToMany<typeof User>
 
-  @hasMany(() => Vote, { foreignKey: 'targetId', serializeAs: null })
+  @hasMany(() => Vote, {
+    foreignKey: 'targetId',
+    onQuery(query) {
+      query.where('target_type', VoteTargetType.THREAD)
+    },
+  })
   public votes: HasMany<typeof Vote>
 
   @column.dateTime({ autoCreate: true })
@@ -72,4 +88,6 @@ export default class Thread extends BaseModel {
   public static addCreatorFollow(thread: Thread) {
     thread.related('usersFollowing').attach([thread.userId])
   }
+
+  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target' 
 }

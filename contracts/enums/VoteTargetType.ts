@@ -1,4 +1,4 @@
 export enum VoteTargetType {
-  POST = 0,
-  THREAD = 1,
+  POST = 1,
+  THREAD = 2,
 }

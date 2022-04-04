@@ -25,6 +25,7 @@ export default class PostsController {
   public async show({ request, response }: HttpContextContract) {
     const postId = request.param('id')
     const post = await Post.findOrFail(postId)
+    await post.load('votes')
     return response.json(post)
   }
 

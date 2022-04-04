@@ -1,5 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  beforeCreate,
+  BelongsTo,
+  belongsTo,
+  column,
+  computed,
+} from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Post from './Post'
 import { VoteType } from 'Contracts/enums/VoteType'
@@ -25,11 +32,23 @@ export default class Vote extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  @belongsTo(() => Post)
+  // TODO: Buscar una manera de crear una variable que sea Post ó Thread, segun el targetType
+  @belongsTo(() => Post, {
+    foreignKey: 'targetId',
+    serializeAs: null,
+  })
   public post: BelongsTo<typeof Post>
 
-  @belongsTo(() => Thread)
+  @belongsTo(() => Thread, {
+    foreignKey: 'targetId',
+    serializeAs: null,
+  })
   public thread: BelongsTo<typeof Thread>
+
+  @computed()
+  public get target() : Post | Thread {
+    return this.targetType === VoteTargetType.POST ? this.post : this.thread
+  }
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
