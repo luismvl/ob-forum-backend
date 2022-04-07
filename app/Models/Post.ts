@@ -32,9 +32,14 @@ export default class Post extends BaseModel {
   @column()
   public threadId: number
 
+  // @computed()
+  // public get votesCount(): number {
+  //   return this.$extras.votes_count || undefined
+  // }
+
   @computed()
-  public get votesCount(): number {
-    return this.$extras.votes_count || undefined
+  public get votesScore(): number {
+    return this.$extras.votes_score || undefined
   }
 
   @computed()
@@ -72,6 +77,8 @@ export default class Post extends BaseModel {
   })
 
   public static withDownVotes = scope((query: ModelQueryBuilderContract<typeof Post>) => {
-    query.withCount('votes', (query) => query.where('type', VoteType.DOWN_VOTE).as('down_votes_count'))
+    query.withCount('votes', (query) =>
+      query.where('type', VoteType.DOWN_VOTE).as('down_votes_count')
+    )
   })
 }

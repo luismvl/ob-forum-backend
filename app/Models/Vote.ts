@@ -46,7 +46,7 @@ export default class Vote extends BaseModel {
   public thread: BelongsTo<typeof Thread>
 
   @computed()
-  public get target() : Post | Thread {
+  public get target(): Post | Thread {
     return this.targetType === VoteTargetType.POST ? this.post : this.thread
   }
 
@@ -66,6 +66,5 @@ export default class Vote extends BaseModel {
     }
   }
 
-  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target' 
-
+  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target'
 }
