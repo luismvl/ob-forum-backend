@@ -7,14 +7,16 @@ import {
   computed,
   HasMany,
   hasMany,
+  ModelQueryBuilderContract,
+  scope,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Thread from './Thread'
 import Vote from './Vote'
 import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteType } from 'Contracts/enums/VoteType'
 
 export default class Post extends BaseModel {
-
   @column({ isPrimary: true })
   public id: number
 
@@ -64,4 +66,12 @@ export default class Post extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  public static withUpVotes = scope((query: ModelQueryBuilderContract<typeof Post>) => {
+    query.withCount('votes', (query) => query.where('type', VoteType.UP_VOTE).as('up_votes_count'))
+  })
+
+  public static withDownVotes = scope((query: ModelQueryBuilderContract<typeof Post>) => {
+    query.withCount('votes', (query) => query.where('type', VoteType.DOWN_VOTE).as('down_votes_count'))
+  })
 }

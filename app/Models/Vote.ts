@@ -65,4 +65,7 @@ export default class Vote extends BaseModel {
       await Thread.findOrFail(vote.targetId)
     }
   }
+
+  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target' 
+
 }

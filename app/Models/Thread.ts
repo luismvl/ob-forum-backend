@@ -10,12 +10,15 @@ import {
   hasMany,
   ManyToMany,
   manyToMany,
+  ModelQueryBuilderContract,
+  scope,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Post from './Post'
 import Subforum from './Subforum'
 import Vote from './Vote'
 import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteType } from 'Contracts/enums/VoteType'
 
 export default class Thread extends BaseModel {
   @column({ isPrimary: true })
@@ -88,6 +91,12 @@ export default class Thread extends BaseModel {
   public static addCreatorFollow(thread: Thread) {
     thread.related('usersFollowing').attach([thread.userId])
   }
+  public static withUpVotes = scope((query: ModelQueryBuilderContract<typeof Thread>) => {
+    query.withCount('votes', (query) => query.where('type', VoteType.UP_VOTE).as('up_votes_count'))
+  })
 
-  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target' 
+  public static withDownVotes = scope((query: ModelQueryBuilderContract<typeof Thread>) => {
+    query.withCount('votes', (query) => query.where('type', VoteType.DOWN_VOTE).as('down_votes_count'))
+  })
+
 }
