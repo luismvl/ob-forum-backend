@@ -81,4 +81,28 @@ export default class Post extends BaseModel {
       query.where('type', VoteType.DOWN_VOTE).as('down_votes_count')
     )
   })
+
+  public static orderByTotalUpVotes = scope(
+    (query: ModelQueryBuilderContract<typeof Post>, order?: 'desc' | 'asc') => {
+      query.match(
+        [
+          order === 'desc',
+          (query) => {
+            query.orderBy('up_votes_count', order).orderBy('down_votes_count', 'asc')
+          },
+        ],
+        [
+          order === 'asc',
+          (query) => query.orderBy('up_votes_count', order).orderBy('down_votes_count', 'desc'),
+        ],
+        (query) => query.orderBy('up_votes_count', 'desc').orderBy('down_votes_count', 'asc')
+      )
+    }
+  )
+
+  public static orderByUpdated = scope(
+    (query: ModelQueryBuilderContract<typeof Post>, order?: 'desc' | 'asc') => {
+      query.orderBy('updated_at', order ?? 'desc')
+    }
+  )
 }

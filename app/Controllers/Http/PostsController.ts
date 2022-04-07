@@ -10,7 +10,7 @@ export default class PostsController {
     const order = request.input('order')
 
     const sortSchema = schema.create({
-      sort: schema.enum.optional(['totalUpVotes']),
+      sort: schema.enum.optional(['totalUpVotes', 'updated_at']),
       order: schema.enum.optional(['asc', 'desc']),
     })
     await request.validate({ schema: sortSchema })
@@ -22,28 +22,17 @@ export default class PostsController {
         scopes.withUpVotes()
         scopes.withDownVotes()
       })
-      .if(
-        sort,
-        (query) => {
-          query.match(
-            [
-              order === 'desc',
-              (query) => {
-                query.orderBy('up_votes_count', order).orderBy('down_votes_count', 'asc')
-              },
-            ],
-            [
-              order === 'asc',
-              (query) => {
-                query.orderBy('up_votes_count', order).orderBy('down_votes_count', 'desc')
-              },
-            ]
-          )
-        },
+      .match(
+        [
+          sort === 'totalUpVotes',
+          (query) => query.apply((scopes) => scopes.orderByTotalUpVotes(order)),
+        ],
+        [
+          sort === 'updated_at',
+          (query) => query.apply((scopes) => scopes.orderByUpdated(order)),
+        ],
         (query) => query.orderBy('is_pinned', 'desc').orderBy('created_at', 'desc')
       )
-
-    // TODO:  Agregar filtro por fecha
 
     // .with('votes_score', (query) =>
     //   query
