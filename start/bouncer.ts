@@ -56,5 +56,6 @@ export const { actions } = Bouncer
 */
 export const { policies } = Bouncer.registerPolicies({
   SubforumPolicy: () => import('App/Policies/SubforumPolicy'),
-  ThreadsPolicy: () => import('App/Policies/ThreadsPolicy')
+  ThreadsPolicy: () => import('App/Policies/ThreadsPolicy'),
+  PostsPolicy: () => import('App/Policies/PostsPolicy'),
 })

@@ -28,9 +28,13 @@ export default class ThreadsController {
     })
 
     const data = await request.validate({ schema: threadSchema })
-
-    if (user.isAdmin) data.userId = data.userId ?? user.id
-    else data.userId = user.id
+    if (user.isAdmin) {
+      data.userId = data.userId ?? user.id
+      data.isPinned = data.isPinned ?? false
+    } else {
+      data.userId = user.id
+      data.isPinned = false
+    }
 
     const thread = await Thread.create(data)
     await thread.refresh()
@@ -69,7 +73,7 @@ export default class ThreadsController {
       subject: schema.string.optional({ trim: true }, [rules.maxLength(100)]),
       content: schema.string.optional({ escape: true }, [rules.maxLength(1000)]),
       isPinned: schema.boolean.optional(),
-      subforumId: schema.number.optional([rules.exists({ table: 'subforums', column: 'id' })]),
+      // subforumId: schema.number.optional([rules.exists({ table: 'subforums', column: 'id' })]),
     })
 
     const data = await request.validate({ schema: threadSchema })
