@@ -6,6 +6,8 @@ import {
   belongsTo,
   column,
   computed,
+  ModelQueryBuilderContract,
+  scope,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Post from './Post'
@@ -32,7 +34,7 @@ export default class Vote extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  // TODO: Buscar una manera de crear una variable que sea Post ó Thread, segun el targetType
+  // TODO: Buscar una manera de crear una variable que sea Post o Thread segun el targetType
   @belongsTo(() => Post, {
     foreignKey: 'targetId',
     serializeAs: null,
@@ -66,5 +68,8 @@ export default class Vote extends BaseModel {
     }
   }
 
-  // TODO: preload siempre 'thread' y 'post' para que siempre traiga el 'target'
+  public static withTarget = scope((query: ModelQueryBuilderContract<typeof Vote>) => {
+    query.preload('post')
+    query.preload('thread')
+  })
 }

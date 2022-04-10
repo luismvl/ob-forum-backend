@@ -38,7 +38,7 @@ export default class CoursesController {
     const courseSchema = schema.create({
       title: schema.string.optional({ trim: true }, [
         rules.minLength(2),
-        rules.unique({ table: 'courses', column: 'title' }),
+        rules.unique({ table: 'courses', column: 'title', caseInsensitive: true }),
       ]),
       description: schema.string.optional(),
       iconUrl: schema.string.optional({}, [rules.url()]),

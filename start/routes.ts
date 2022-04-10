@@ -35,8 +35,6 @@ Route.group(() => {
   Route.post('/register', 'AuthController.register')
 }).prefix('auth')
 
-Route.get('/testvote', 'TestsController.testvote')
-
 Route.group(() => {
   Route.resource('courses', 'CoursesController').apiOnly()
   Route.resource('subforums', 'SubforumsController').apiOnly()

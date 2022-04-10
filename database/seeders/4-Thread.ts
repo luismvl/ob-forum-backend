@@ -71,14 +71,13 @@ export default class ThreadSeeder extends BaseSeeder {
       .where('title', 'Módulo 1')
       .firstOrFail()
 
-      await subforums2.related('threads')
-      .updateOrCreateMany([
-        {
-          subject: 'Subject of a PINNED thread',
-          content: 'Thread content!, it should probably be in html',
-          userId: user.id,
-          isPinned: true,
-        },
-      ])
+    await subforums2.related('threads').updateOrCreateMany([
+      {
+        subject: 'Subject of a PINNED thread',
+        content: 'Thread content!, it should probably be in html',
+        userId: user.id,
+        isPinned: true,
+      },
+    ])
   }
 }

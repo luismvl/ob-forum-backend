@@ -68,6 +68,7 @@ export default class ThreadsController {
     const user = auth.user as User
     const threadId = request.param('id')
     const thread = await Thread.findOrFail(threadId)
+    await bouncer.with('ThreadsPolicy').authorize('update', thread)
 
     const threadSchema = schema.create({
       subject: schema.string.optional({ trim: true }, [rules.maxLength(100)]),
@@ -77,7 +78,6 @@ export default class ThreadsController {
     })
 
     const data = await request.validate({ schema: threadSchema })
-    await bouncer.with('ThreadsPolicy').authorize('update', thread)
     if (user.isAdmin) data.isPinned = data.isPinned ?? thread.isPinned
     else data.isPinned = thread.isPinned
     await thread.merge(data).save()

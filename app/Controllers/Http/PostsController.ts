@@ -77,6 +77,7 @@ export default class PostsController {
     const user = auth.user as User
     const postId = request.param('id')
     const post = await Post.findOrFail(postId)
+    await bouncer.with('PostsPolicy').authorize('update', post)
 
     const postSchema = schema.create({
       content: schema.string({ escape: true }, [rules.maxLength(1000)]),
@@ -85,7 +86,6 @@ export default class PostsController {
     })
 
     const data = await request.validate({ schema: postSchema })
-    await bouncer.with('PostsPolicy').authorize('update', post)
     if (user.isAdmin) data.isPinned = data.isPinned ?? post.isPinned
     else data.isPinned = post.isPinned
 
