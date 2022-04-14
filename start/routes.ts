@@ -37,6 +37,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.resource('courses', 'CoursesController').apiOnly()
+  Route.resource('modules', 'ModulesController').apiOnly()
   Route.resource('subforums', 'SubforumsController').apiOnly()
   Route.resource('threads', 'ThreadsController').apiOnly()
   Route.resource('posts', 'PostsController').apiOnly()
