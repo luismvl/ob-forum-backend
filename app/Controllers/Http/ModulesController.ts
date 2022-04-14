@@ -13,7 +13,7 @@ export default class ModulesController {
 
     const moduleSchema = schema.create({
       title: schema.string({ trim: true }, [rules.minLength(2)]),
-      description: schema.string.optional(),
+      description: schema.string.optional({ trim: true }),
       courseId: schema.number(),
     })
 

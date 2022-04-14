@@ -15,6 +15,7 @@ export default class AuthController {
 
   public async register({ request, response }: HttpContextContract) {
     const data = await request.validate(RegisterValidator)
+    // Add schema validation
     const user = await User.create(data)
 
     return response.json(user)
