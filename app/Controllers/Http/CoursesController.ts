@@ -42,7 +42,7 @@ export default class CoursesController {
         rules.minLength(2),
         rules.unique({ table: 'courses', column: 'title', caseInsensitive: true }),
       ]),
-      description: schema.string.optional(),
+      description: schema.string.optional({ trim: true }),
       iconUrl: schema.string.optional({}, [rules.url()]),
     })
     const data = await request.validate({ schema: courseSchema })

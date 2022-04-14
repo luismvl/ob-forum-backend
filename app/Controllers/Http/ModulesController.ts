@@ -36,7 +36,7 @@ export default class ModulesController {
     const moduleId = request.param('id')
     const moduleSchema = schema.create({
       title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
-      description: schema.string.optional(),
+      description: schema.string.optional({ trim: true }),
       courseId: schema.number.optional(),
     })
     const data = await request.validate({ schema: moduleSchema })
