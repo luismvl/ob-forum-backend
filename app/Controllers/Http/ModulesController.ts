@@ -8,10 +8,9 @@ export default class ModulesController {
     return response.json(modules)
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    // if (!auth.user?.isAdmin) {
-    //   return response.unauthorized()
-    // }
+  public async store({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ModulesPolicy').authorize('create')
+
     const moduleSchema = schema.create({
       title: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string.optional(),
@@ -20,6 +19,7 @@ export default class ModulesController {
 
     const data = await request.validate({ schema: moduleSchema })
     const module = await Module.create(data)
+    await module.refresh()
 
     return response.json(module)
   }
@@ -30,14 +30,15 @@ export default class ModulesController {
     return response.json(module)
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ModulesPolicy').authorize('update')
+    
     const moduleId = request.param('id')
     const moduleSchema = schema.create({
       title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
       description: schema.string.optional(),
       courseId: schema.number.optional(),
     })
-
     const data = await request.validate({ schema: moduleSchema })
 
     const module = await Module.findOrFail(moduleId)
@@ -46,7 +47,9 @@ export default class ModulesController {
     return response.json(module)
   }
 
-  public async destroy({ request, response }: HttpContextContract) {
+  public async destroy({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('ModulesPolicy').authorize('delete')
+
     const moduleId = request.param('id')
     const module = await Module.findOrFail(moduleId)
     await module.delete()

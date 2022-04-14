@@ -8,7 +8,9 @@ export default class CoursesController {
     return response.json(courses)
   }
 
-  public async store({ request, response }: HttpContextContract) {
+  public async store({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('CoursePolicy').authorize('create')
+
     const courseSchema = schema.create({
       title: schema.string({ trim: true }, [
         rules.minLength(2),
@@ -17,14 +19,12 @@ export default class CoursesController {
       description: schema.string.optional(),
       iconUrl: schema.string.optional({}, [rules.url()]),
     })
-
-    // const user = auth.user
-
     const data = await request.validate({ schema: courseSchema })
-    const course = await Course.create(data)
-    // await user?.related('courses').save(course)
 
-    return response.json({ course })
+    const course = await Course.create(data)
+    await course.refresh()
+
+    return response.json(course)
   }
 
   public async show({ request, response }: HttpContextContract) {
@@ -33,7 +33,9 @@ export default class CoursesController {
     return response.json(course)
   }
 
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('CoursePolicy').authorize('update')
+    
     const courseId = request.param('id')
     const courseSchema = schema.create({
       title: schema.string.optional({ trim: true }, [
@@ -43,7 +45,6 @@ export default class CoursesController {
       description: schema.string.optional(),
       iconUrl: schema.string.optional({}, [rules.url()]),
     })
-
     const data = await request.validate({ schema: courseSchema })
 
     const course = await Course.findOrFail(courseId)
@@ -52,7 +53,9 @@ export default class CoursesController {
     return response.json(course)
   }
 
-  public async destroy({ request, response }: HttpContextContract) {
+  public async destroy({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.with('CoursePolicy').authorize('delete')
+
     const courseId = request.param('id')
     const course = await Course.findOrFail(courseId)
     await course.delete()
