@@ -12,7 +12,7 @@ import {
 import User from './User'
 import Post from './Post'
 import { VoteType } from 'Contracts/enums/VoteType'
-import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteTarget } from 'Contracts/enums/VoteTarget'
 import Thread from './Thread'
 
 export default class Vote extends BaseModel {
@@ -29,7 +29,7 @@ export default class Vote extends BaseModel {
   public targetId: number
 
   @column()
-  public targetType: VoteTargetType
+  public targetType: VoteTarget
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
@@ -49,7 +49,7 @@ export default class Vote extends BaseModel {
 
   @computed()
   public get target(): Post | Thread {
-    return this.targetType === VoteTargetType.POST ? this.post : this.thread
+    return this.targetType === VoteTarget.POST ? this.post : this.thread
   }
 
   @column.dateTime({ autoCreate: true })
@@ -61,7 +61,7 @@ export default class Vote extends BaseModel {
   // Valida el targetId
   @beforeCreate()
   public static async validateTargetId(vote: Vote) {
-    if (vote.targetType === VoteTargetType.POST) {
+    if (vote.targetType === VoteTarget.POST) {
       await Post.findOrFail(vote.targetId)
     } else {
       await Thread.findOrFail(vote.targetId)

@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Vote from 'App/Models/Vote'
-import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteTarget } from 'Contracts/enums/VoteTarget'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { VoteType } from 'Contracts/enums/VoteType'
 import User from 'App/Models/User'
@@ -17,7 +17,7 @@ export default class VotesController {
     const votes = await Vote.query().if(targetId, (query) =>
       query
         .where('target_id', targetId as number)
-        .andWhere('target_type', filter.postId ? VoteTargetType.POST : VoteTargetType.THREAD)
+        .andWhere('target_type', filter.postId ? VoteTarget.POST : VoteTarget.THREAD)
     )
 
     return response.json(votes)
@@ -25,18 +25,18 @@ export default class VotesController {
 
   public async store({ request, response, auth }: HttpContextContract) {
     const user = auth.user as User
-    const targetType = request.input('targetType') as VoteTargetType
+    const targetType = request.input('targetType') as VoteTarget
 
     const voteSchema = schema.create({
       type: schema.enum(Object.values(VoteType) as number[]),
       userId: schema.number.optional([rules.exists({ table: 'users', column: 'id' })]),
       targetId: schema.number([
         rules.exists({
-          table: targetType === VoteTargetType.THREAD ? 'threads' : 'posts',
+          table: targetType === VoteTarget.THREAD ? 'threads' : 'posts',
           column: 'id',
         }),
       ]),
-      targetType: schema.enum(Object.values(VoteTargetType) as number[]),
+      targetType: schema.enum(Object.values(VoteTarget) as number[]),
     })
 
     const data = await request.validate({ schema: voteSchema })

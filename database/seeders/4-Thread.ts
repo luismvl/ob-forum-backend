@@ -1,7 +1,7 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import Course from 'App/Models/Course'
 import User from 'App/Models/User'
-import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteTarget } from 'Contracts/enums/VoteTarget'
 import { VoteType } from 'Contracts/enums/VoteType'
 
 export default class ThreadSeeder extends BaseSeeder {
@@ -59,7 +59,7 @@ export default class ThreadSeeder extends BaseSeeder {
     await thread[0]
       .related('votes')
       .updateOrCreate(
-        { userId: user.id, targetType: VoteTargetType.THREAD, targetId: thread[0].id },
+        { userId: user.id, targetType: VoteTarget.THREAD, targetId: thread[0].id },
         { type: VoteType.UP_VOTE }
       )
 

@@ -13,7 +13,7 @@ import {
 import User from './User'
 import Thread from './Thread'
 import Vote from './Vote'
-import { VoteTargetType } from 'Contracts/enums/VoteTargetType'
+import { VoteTarget } from 'Contracts/enums/VoteTarget'
 import { VoteType } from 'Contracts/enums/VoteType'
 
 export default class Post extends BaseModel {
@@ -55,7 +55,7 @@ export default class Post extends BaseModel {
   @hasMany(() => Vote, {
     foreignKey: 'targetId',
     onQuery(query) {
-      query.where('target_type', VoteTargetType.POST)
+      query.where('target_type', VoteTarget.POST)
     },
   })
   public votes: HasMany<typeof Vote>
