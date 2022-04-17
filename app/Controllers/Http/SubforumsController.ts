@@ -8,7 +8,7 @@ export default class SubforumsController {
     const user = auth.user as User
     const courseId = request.input('courseId')
     const moduleId = request.input('moduleId')
-    const userCourses = await user.related('courses').query()
+    // const userCourses = await user.related('courses').query()
 
     let subforums = await Subforum.query()
       .if(courseId, (query) => {
@@ -18,12 +18,12 @@ export default class SubforumsController {
         query.andWhere('moduleId', moduleId)
       })
       // Si no es admin solo trae los subforos a los que el usuario tiene acceso
-      .if(!user.isAdmin, (query) =>
-        query.whereIn(
-          'course_id',
-          userCourses.map((f) => f.id)
-        )
-      )
+      // .if(!user.isAdmin, (query) =>
+      //   query.whereIn(
+      //     'course_id',
+      //     userCourses.map((f) => f.id)
+      //   )
+      // )
       .orderBy('is_pinned', 'desc')
       .preload('threads')
       .withCount('threads')

@@ -35,7 +35,7 @@ export default class CoursesController {
 
   public async update({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('CoursePolicy').authorize('update')
-    
+
     const courseId = request.param('id')
     const courseSchema = schema.create({
       title: schema.string.optional({ trim: true }, [
