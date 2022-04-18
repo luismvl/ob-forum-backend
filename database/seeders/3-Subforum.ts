@@ -10,22 +10,22 @@ export default class ForumSeeder extends BaseSeeder {
       await course.related('subforums').updateOrCreateMany(
         [
           {
-            title: 'General',
+            name: 'General',
             description: 'Dudas generales',
             isPinned: true,
           },
           {
-            title: 'Errores',
+            name: 'Errores',
             description: 'Errores',
             isPinned: true,
           },
           {
-            title: 'Proyectos',
+            name: 'Proyectos',
             description: 'Proyectos',
             isPinned: true,
           },
         ],
-        'title'
+        'name'
       )
     }
 
@@ -36,7 +36,7 @@ export default class ForumSeeder extends BaseSeeder {
           return course
             .related('subforums')
             .updateOrCreate(
-              { title: module.title },
+              { name: module.name },
               { description: module.description, moduleId: module.id }
             )
         })

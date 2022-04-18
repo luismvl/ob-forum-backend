@@ -4,22 +4,22 @@ import Course from 'App/Models/Course'
 export default class CourseSeeder extends BaseSeeder {
   public async run() {
     await Course.updateOrCreateMany(
-      ['title'],
+      ['name'],
       [
         {
-          title: 'React JS',
+          name: 'React JS',
         },
         {
-          title: 'Angular',
+          name: 'Angular',
         },
         {
-          title: 'Spring',
+          name: 'Spring',
         },
         {
-          title: 'JavaScript',
+          name: 'JavaScript',
         },
         {
-          title: 'Git',
+          name: 'Git',
         },
       ]
     )

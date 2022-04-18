@@ -20,7 +20,7 @@ export default class Subforum extends BaseModel {
   public id: number
 
   @column()
-  public title: string
+  public name: string
 
   @column()
   public description: string

@@ -12,7 +12,7 @@ export default class ModulesController {
     await bouncer.with('ModulesPolicy').authorize('create')
 
     const moduleSchema = schema.create({
-      title: schema.string({ trim: true }, [rules.minLength(2)]),
+      name: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string.optional({ trim: true }),
       courseId: schema.number(),
     })
@@ -32,10 +32,10 @@ export default class ModulesController {
 
   public async update({ request, response, bouncer }: HttpContextContract) {
     await bouncer.with('ModulesPolicy').authorize('update')
-    
+
     const moduleId = request.param('id')
     const moduleSchema = schema.create({
-      title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
+      name: schema.string.optional({ trim: true }, [rules.minLength(2)]),
       description: schema.string.optional({ trim: true }),
       courseId: schema.number.optional(),
     })

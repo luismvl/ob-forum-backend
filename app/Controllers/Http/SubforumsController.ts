@@ -5,9 +5,9 @@ import User from 'App/Models/User'
 
 export default class SubforumsController {
   public async index({ request, response, auth }: HttpContextContract) {
-    const user = auth.user as User
     const courseId = request.input('courseId')
     const moduleId = request.input('moduleId')
+    const user = auth.user as User
     // const userCourses = await user.related('courses').query()
 
     let subforums = await Subforum.query()
@@ -39,7 +39,7 @@ export default class SubforumsController {
     await bouncer.with('SubforumPolicy').authorize('create')
 
     const subforumSchema = schema.create({
-      title: schema.string({ trim: true }, [rules.minLength(2)]),
+      name: schema.string({ trim: true }, [rules.minLength(2)]),
       description: schema.string(),
       isPinned: schema.boolean.optional(),
       courseId: schema.number(),
@@ -71,7 +71,7 @@ export default class SubforumsController {
 
     const subforumId = request.param('id')
     const subforumSchema = schema.create({
-      title: schema.string.optional({ trim: true }, [rules.minLength(2)]),
+      name: schema.string.optional({ trim: true }, [rules.minLength(2)]),
       description: schema.string.optional(),
       isPinned: schema.boolean.optional(),
       forumId: schema.number.optional(),

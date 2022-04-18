@@ -12,9 +12,9 @@ export default class CoursesController {
     await bouncer.with('CoursePolicy').authorize('create')
 
     const courseSchema = schema.create({
-      title: schema.string({ trim: true }, [
+      name: schema.string({ trim: true }, [
         rules.minLength(2),
-        rules.unique({ table: 'courses', column: 'title' }),
+        rules.unique({ table: 'courses', column: 'name' }),
       ]),
       description: schema.string.optional({ trim: true }),
       iconUrl: schema.string.optional({}, [rules.url()]),
@@ -38,9 +38,9 @@ export default class CoursesController {
 
     const courseId = request.param('id')
     const courseSchema = schema.create({
-      title: schema.string.optional({ trim: true }, [
+      name: schema.string.optional({ trim: true }, [
         rules.minLength(2),
-        rules.unique({ table: 'courses', column: 'title', caseInsensitive: true }),
+        rules.unique({ table: 'courses', column: 'name', caseInsensitive: true }),
       ]),
       description: schema.string.optional({ trim: true }),
       iconUrl: schema.string.optional({}, [rules.url()]),

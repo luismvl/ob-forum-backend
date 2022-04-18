@@ -20,10 +20,7 @@
     "./start/bouncer",
     {
       "file": "./start/namingstratergy",
-      "environment": [
-        "console",
-        "web"
-      ]
+      "environment": ["console", "web"]
     }
   ],
   "providers": [
@@ -33,7 +30,5 @@
     "@adonisjs/auth",
     "@adonisjs/bouncer"
   ],
-  "aceProviders": [
-    "@adonisjs/repl"
-  ]
+  "aceProviders": ["@adonisjs/repl"]
 }

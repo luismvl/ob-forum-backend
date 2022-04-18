@@ -96,7 +96,8 @@ export default class Thread extends BaseModel {
   })
 
   public static withDownVotes = scope((query: ModelQueryBuilderContract<typeof Thread>) => {
-    query.withCount('votes', (query) => query.where('type', VoteType.DOWN_VOTE).as('down_votes_count'))
+    query.withCount('votes', (query) =>
+      query.where('type', VoteType.DOWN_VOTE).as('down_votes_count')
+    )
   })
-
 }
