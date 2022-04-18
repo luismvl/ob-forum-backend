@@ -1,13 +1,13 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Subforum from 'App/Models/Subforum'
-import User from 'App/Models/User'
+// import User from 'App/Models/User'
 
 export default class SubforumsController {
-  public async index({ request, response, auth }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract) {
     const courseId = request.input('courseId')
     const moduleId = request.input('moduleId')
-    const user = auth.user as User
+    // const user = auth.user as User
     // const userCourses = await user.related('courses').query()
 
     let subforums = await Subforum.query()
