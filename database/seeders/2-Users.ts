@@ -1,5 +1,4 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import Course from 'App/Models/Course'
 import User from 'App/Models/User'
 
 export default class UsersSeeder extends BaseSeeder {
@@ -24,11 +23,5 @@ export default class UsersSeeder extends BaseSeeder {
         },
       ]
     )
-
-    const userDemo = await User.findByOrFail('username', 'demo')
-    const courseAngular = await Course.query().where('title', 'Angular').firstOrFail()
-
-    await userDemo.related('courses').attach([1])
-    await userDemo.related('courses').attach([courseAngular.id])
   }
 }
