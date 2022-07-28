@@ -33,6 +33,7 @@ Route.get('/health', async ({ response }) => {
 Route.group(() => {
   Route.post('/login', 'AuthController.login')
   Route.post('/register', 'AuthController.register')
+  Route.post('/check-token', 'AuthController.check').middleware('auth')
 }).prefix('auth')
 
 Route.group(() => {
