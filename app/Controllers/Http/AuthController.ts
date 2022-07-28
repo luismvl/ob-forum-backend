@@ -46,7 +46,7 @@ export default class AuthController {
     return response.noContent()
   }
 
-  public async check({ request, response, auth }: HttpContextContract) {
-    return auth.user?.serialize()
+  public async check({ response, auth }: HttpContextContract) {
+    return response.json(auth.user?.serialize())
   }
 }
