@@ -21,7 +21,7 @@ export default class AuthController {
         expiresIn: '10 days',
       })
 
-    return token.toJSON()
+    return { token: token.token, user: token.user }
   }
 
   public async register({ request, response }: HttpContextContract) {
@@ -41,9 +41,8 @@ export default class AuthController {
     })
     const data = await request.validate({ schema: userSchema })
 
-    const user = await User.create(data)
-    await user.refresh()
+    await User.create(data)
 
-    return response.json(user)
+    return response.noContent()
   }
 }
