@@ -4,7 +4,7 @@ import Course from 'App/Models/Course'
 
 export default class CoursesController {
   public async index({ response }: HttpContextContract) {
-    const courses = await Course.all()
+    const courses = await Course.query().orderBy('name')
     return response.json(courses)
   }
 
